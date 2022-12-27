@@ -22,4 +22,4 @@ Since the prices change rapidly during the day, instead of just holding your pos
 
 Test results:
 
-![alt text](img/test_result.png)
+![alt text](test_result.png)

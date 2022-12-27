@@ -20,3 +20,7 @@ Since the prices change rapidly during the day, instead of just holding your pos
 <sub>It is assumed that the client order and hedge happen simultaneously, so P&L is not changed before and after the hedge. </sub>
 
 <sub>PostgreSQL used as database. </sub>
+
+Test results:
+
+![alt text](img/test_result.png)

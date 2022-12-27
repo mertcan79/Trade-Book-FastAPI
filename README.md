@@ -1,12 +1,11 @@
 # FastAPI based Trade Book 
 
-FastAPI based Trade Book implementation with multiple features like hedging, stop-loss, VaR calculation, P&L and Max Drawdown calculations.
+FastAPI based Trade Book implementation with multiple features like hedging, stop-loss, VaR calculation, P&L and Max Drawdown calculations. Risk management parameters and initial prices & positions are read from PostgreSQL database in order to build the TradeBook class. After the client order is added, the database of prices and positions are updated and statistics are displayed. 
 
 When managing a trading book with instruments, initial positions and prices at the beginning of the day, you will trade with clients and the positions will be changed. 
 A premium is charged from the clients so the traded price might not be the same as the market.
 
-Classes are written for ClientOrder, MarketUpdate, TradeBook which deals with the trade activities and calculates real-time P&L.
-They are initialized with the initial positions and initial market prices, and has four functions:
+TradeBook class deals with the trade activities and calculates real-time statistics. It is initialized with the initial positions and initial market prices. Some of its functions are as follows:
 
 - **add_client_order** – with argument as an instance of ClientOrder
 - **update_market_price** – with argument as an instance of MarketUpdate

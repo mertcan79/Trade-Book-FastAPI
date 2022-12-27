@@ -18,3 +18,5 @@ Since the prices change rapidly during the day, instead of just holding your pos
 <sub>Assuming the trades can be executed immediately after a **client order**, P&L and Max Drawdown are changed to reflect this strategy (with or without hedge).</sub>
 
 <sub>It is assumed that the client order and hedge happen simultaneously, so P&L is not changed before and after the hedge. </sub>
+
+<sub>PostgreSQL used as database. </sub>

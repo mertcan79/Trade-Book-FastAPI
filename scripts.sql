@@ -1,7 +1,7 @@
 CREATE TABLE trade_history(
-    instrument_id VARCHAR(20) PRIMARY KEY,
+    instrument_id VARCHAR(20) NOT NULL,
     position INTEGER NOT NULL,
-    timestamp TIMESTAMP,
+    timestamp TIMESTAMP NOT NULL,
     price REAL NOT NULL
 );
 

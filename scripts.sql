@@ -1,3 +1,10 @@
+CREATE TABLE trade_history(
+    instrument_id VARCHAR(20) PRIMARY KEY,
+    position INTEGER NOT NULL,
+    timestamp TIMESTAMP,
+    price REAL NOT NULL
+);
+
 CREATE TABLE positions (
     instrument_id VARCHAR(20) PRIMARY KEY,
     position INTEGER NOT NULL

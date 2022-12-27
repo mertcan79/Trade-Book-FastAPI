@@ -65,7 +65,8 @@ def trade(order: ClientOrder) -> Dict:
     cursor.close()
     connection.close()
 
-    return {'instrument': order.instrument_id, "pnl": trade_book.pnl, 'Max Drawdown': trade_book.maximum_drawdown,
-            'Hedged?': str(order.hedge), 'Price': order.traded_price,
-            'Value at Risk': trade_book.calculate_var(alpha=0.95)
+    return {'Instrument Traded': order.instrument_id, "P&L for the portfolio": trade_book.pnl, 
+            'Max Drawdown': trade_book.maximum_drawdown,
+            'Hedged?': str(order.hedge), 'Price': str(order.traded_price),
+            'Value at Risk': int(trade_book.calculate_var(alpha=0.95))
             }

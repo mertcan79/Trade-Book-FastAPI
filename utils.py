@@ -104,3 +104,18 @@ class TradeBook:
     def pnl(self):
         return self.pnl
 
+    def calculate_sharpe_ratio(self, risk_free_rate, time_period):
+        returns = []
+        for instrument_id in self.initial_positions:
+            returns.append((self.pnl[instrument_id] / self.initial_positions[instrument_id]) / time_period)
+        return (np.mean(returns) - risk_free_rate) / np.std(returns)
+
+    def calculate_roi(self, instrument_id):
+        cost_of_investment = self.initial_positions[instrument_id] * self.initial_market_prices[instrument_id]
+        gain_from_investment = self.pnl[instrument_id] - self.transaction_costs[instrument_id]
+        return (gain_from_investment - cost_of_investment) / cost_of_investment
+
+    def calculate_calmar_ratio(self, time_period):
+        annualized_return = sum(self.pnl.values()) / time_period
+        maximum_drawdown = 1 if self.maximum_drawdown == 0 else self.maximum_drawdown / time_period
+        return annualized_return / maximum_drawdown

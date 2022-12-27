@@ -1,20 +1,5 @@
-import time
 import numpy as np
-import yfinance as yf
 from scipy.stats import norm
-
-
-class ClientOrder:
-    def __init__(self, instrument_id, traded_price, quantity):
-        self.instrument_id = instrument_id
-        self.traded_price = traded_price
-        self.quantity = quantity
-
-
-class MarketUpdate:
-    def __init__(self, instrument_id, market_price):
-        self.instrument_id = instrument_id
-        self.market_price = market_price
 
 
 class TradeBook:

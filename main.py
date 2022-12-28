@@ -1,10 +1,13 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from db import get_db_connection
 from models import ClientOrder
 from utils import TradeBook
 from typing import Dict
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import PlainTextResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 app = FastAPI(title='TRADE_BOOK', version='1.0')
 
@@ -16,17 +19,29 @@ app.add_middleware(
     allow_credentials=True)
 
 
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request, exc):
+    return PlainTextResponse(str(exc.detail), status_code=exc.status_code)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    return PlainTextResponse(str(exc), status_code=400)
+
+
 @app.get('/')
-def trade_history() -> Dict:
+async def trade_history() -> Dict:
     connection, cursor = get_db_connection()
     # Load the initial positions and prices from the database
     cursor.execute("SELECT * FROM trade_history")
     history = cursor.fetchall()
+    history = [list(x) for x in set(tuple(x) for x in history)]
+
     return {"message": 'Welcome to the trade book.', 'History': history}
 
 
 @app.post("/trade")
-def trade(order: ClientOrder) -> Dict:
+async def trade(order: ClientOrder) -> Dict:
     connection, cursor = get_db_connection()
 
     # Load the initial positions and prices from the database
@@ -47,6 +62,11 @@ def trade(order: ClientOrder) -> Dict:
     trade_book = TradeBook(initial_positions=initial_positions, initial_market_prices=market_prices,
                            volatility=volatility, risk_appetite=risk_appetite, transaction_costs=transaction_costs,
                            hedge=order.hedge)
+
+    instruments = list(trade_book.positions.keys())
+
+    if order.instrument_id not in instruments:
+        raise HTTPException(status_code=404, detail="Instrument not found")
 
     # Add the client order to the trade book
     trade_book.add_client_order(order.instrument_id, order.traded_price, order.quantity)
@@ -70,9 +90,11 @@ def trade(order: ClientOrder) -> Dict:
     cursor.close()
     connection.close()
 
-    return {'Instrument Traded': order.instrument_id, "P&L for the portfolio": trade_book.pnl,
+    return {'Instrument Traded': order.instrument_id,
+            "P&L for the portfolio": trade_book.pnl,
             'Max Drawdown': trade_book.maximum_drawdown,
-            'Hedged?': str(order.hedge), 'Price': str(order.traded_price),
+            'Hedged?': str(order.hedge),
+            'Price': str(order.traded_price),
             'Value at Risk': var,
             'sharpe_ratio': sharpe_ratio,
             'ROI': roi,
